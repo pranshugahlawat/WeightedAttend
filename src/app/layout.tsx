@@ -1,7 +1,5 @@
 import Footer from "@/components/Footer";
 import "./global.css";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "WeightedAttend",
@@ -9,12 +7,9 @@ export const metadata = {
 };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
-  if (!session) redirect("/signin");
   return (
     <html lang="en">
-      <body>{children}</body>
-      <Footer/>
+      <body>{children}<Footer/></body>
     </html>
   );
 }

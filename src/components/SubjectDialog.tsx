@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function SubjectDialog({ onDone }: { onDone: () => void }) {
+export default function SubjectDialog() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
@@ -22,10 +24,11 @@ export default function SubjectDialog({ onDone }: { onDone: () => void }) {
       alert((await res.json())?.error ?? "Failed");
       return;
     }
+
     setOpen(false);
     setName("");
     setCode("");
-    onDone();
+    router.refresh(); // refresh server page data safely
   }
 
   return (
@@ -38,12 +41,12 @@ export default function SubjectDialog({ onDone }: { onDone: () => void }) {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
           <div className="w-full max-w-md bg-white rounded-lg border border-neutral-200 p-4">
             <div className="font-semibold">New Subject</div>
+
             <div className="mt-3 space-y-2">
-              <input className="w-full border rounded-md p-2" placeholder="Name (e.g., ICT 101T)" value={name} onChange={(e) => setName(e.target.value)} />
+              <input className="w-full border rounded-md p-2" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
               <input className="w-full border rounded-md p-2" placeholder="Code (optional)" value={code} onChange={(e) => setCode(e.target.value)} />
               <label className="text-sm flex items-center gap-2">
-                Color:
-                <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
+                Color: <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
               </label>
             </div>
 

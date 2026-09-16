@@ -1,3 +1,5 @@
+"use client"
+
 export default function SignupPage() {
   return (
     <div className="min-h-screen grid place-items-center p-4">

@@ -22,7 +22,7 @@ export default async function SubjectsPage() {
             </div>
           </div>
 
-          <SubjectDialog onDone={() => location.reload()} />
+          <SubjectDialog />
         </div>
 
         <SubjectsTable subjects={subjects} />
