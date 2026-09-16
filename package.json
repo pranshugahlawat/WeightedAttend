@@ -1,0 +1,36 @@
+{
+  "name": "weightedattend",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@prisma/client": "^7.10.0",
+    "bcryptjs": "^2.4.3",
+    "date-fns": "^3.6.0",
+    "next": "^16.3.5",
+    "next-auth": "^4.24.15",
+    "pdfjs-dist": "^4.6.82",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7",
+    "tesseract.js": "^5.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.6.2"
+  }
+}

@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SessionStatus {
+  PRESENT
+  ABSENT
+  CANCELLED
+}
+
+enum LabGroup {
+  A
+  B
+  C
+  D
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  subjects         Subject[]
+  profiles         TimetableProfile[]
+  timetableEntries TimetableEntry[]
+  sessions         ClassSession[]
+  holidays         Holiday[]
+  settings         UserSettings?
+}
+
+model UserSettings {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  semesterStart DateTime @db.Date
+  semesterEnd   DateTime @db.Date
+  targetPercent Int      @default(75)
+  countryCode   String   @default("IN")
+
+  activeProfileId String?
+  activeLabGroup  LabGroup @default(A)
+
+  timeSlots Json?
+
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activeProfile TimetableProfile? @relation("ActiveProfile", fields: [activeProfileId], references: [id], onDelete: SetNull)
+
+  @@index([userId, activeProfileId])
+}
+
+model TimetableProfile {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entries TimetableEntry[]
+
+  activeInSettings UserSettings[] @relation("ActiveProfile")
+
+  @@unique([userId, name])
+  @@index([userId, isDefault])
+}
+
+model Subject {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  code      String?
+  color     String?
+  createdAt DateTime @default(now())
+
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entries TimetableEntry[]
+
+  @@unique([userId, name])
+}
+
+model TimetableEntry {
+  id        String @id @default(cuid())
+  userId    String
+  profileId String
+  subjectId String
+
+  weekday   Int
+  startTime String
+  endTime   String
+  weight    Int     @default(1)
+  location  String?
+
+  labGroup LabGroup?
+
+  validFrom DateTime  @db.Date
+  validTo   DateTime? @db.Date
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile  TimetableProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  subject  Subject          @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  sessions ClassSession[]
+
+  @@index([userId, profileId, weekday])
+  @@index([profileId, validFrom, validTo])
+}
+
+model ClassSession {
+  id               String        @id @default(cuid())
+  userId           String
+  timetableEntryId String
+  date             DateTime      @db.Date
+  status           SessionStatus
+  note             String?
+  createdAt        DateTime      @default(now())
+
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timetableEntry TimetableEntry @relation(fields: [timetableEntryId], references: [id], onDelete: Cascade)
+
+  @@unique([timetableEntryId, date])
+  @@index([userId, date])
+}
+
+model Holiday {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @db.Date
+  name      String
+  source    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
