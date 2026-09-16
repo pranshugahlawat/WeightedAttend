@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+  "build": "prisma generate && prisma migrate deploy && next build",
+  "start": "next start",
+  "prisma:migrate": "prisma migrate dev",
+  "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.15",
@@ -33,5 +33,8 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.6.2"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
