@@ -1,53 +1,73 @@
 # WeightedAttend
 
-A **Full Stack Weighted Attendance Tracker** built with **Next.js (App Router) + TypeScript + Prisma + PostgreSQL + NextAuth**.
+Link for Demo: https://youtu.be/7KnL45FffAU
 
-Includes:
-- Weekly timetable with **weighted classes**
-- Subject-wise + overall attendance analytics
-- Target calculator (can miss / must attend)
-- Calendar view + attendance markers
-- Graphs (trend line)
-- Public holiday sync via **Nager.Date**
-- **OCR Timetable Import** from PDF/image (USICT-style grid)
-- **Profiles (Sections)** + **Lab Groups A/B/C/D** support
-- Imported timetable becomes **Default** and is set **Active** automatically
+**WeightedAttend** is a full-stack **Weighted Attendance Tracker** that helps students manage attendance based on a weekly timetable where each day can have a different number of classes. It supports **section profiles**, **lab groups (A/B/C/D)**, **OCR timetable import from PDF/image**, **graphs**, **calendar view**, and **holiday sync**.
+
+> Built for the ACM Web Team recruitment task (Full Stack – Weighted Attendance Tracker).
 
 ---
 
-## Tech Stack
-- Next.js (App Router) + TypeScript
-- PostgreSQL + Prisma
-- NextAuth (Credentials)
-- Tailwind CSS
-- Recharts (graphs)
-- FullCalendar (calendar)
-- Tesseract.js + pdfjs-dist (OCR + PDF page render)
-- Nager.Date API (holidays)
+## Features
+
+### Core (Minimum Requirements)
+- Create and manage a **weekly timetable**
+- Add **subjects** and scheduled classes
+- Mark attendance for **individual classes**
+- Show **overall attendance percentage**
+- Show **subject-wise attendance statistics**
+
+### Bonus Features
+- **Weighted attendance** (labs/practicals can count more)
+- **Target calculator** (classes you can miss / must attend to reach target %)
+- **Calendar view** (shows scheduled classes + markers)
+- **Graphs** (attendance trend)
+- **Holiday sync** using **Nager.Date**
+- **OCR Import** for timetable PDF/image (USICT-style grid)
+- **Profiles (Sections)** + **Lab Groups A/B/C/D**
+- Timetable imports become **Default** and are set **Active** automatically
+
+---
+
+## Tech Stack / Tools
+- **Next.js (App Router)** + **TypeScript**
+- **PostgreSQL** (Supabase)
+- **Prisma ORM**
+- **NextAuth (Credentials)** for authentication
+- **Tailwind CSS** for UI
+- **Tesseract.js** + **pdfjs-dist** for OCR + PDF-to-image
+- **FullCalendar** for calendar view
+- **Recharts** for graphs
 
 ---
 
 ## Key Concepts
+
 ### Profiles (Sections)
-Each imported timetable becomes a **Profile** (e.g., `CSE_I_SEC1`). You can manage them via **Profiles** page:
-- set active
-- set default
-- rename
-- delete
+Each imported timetable becomes a **Profile** (example: `CSE_I_SEC1`).  
+You can manage profiles in **Profiles**:
+- Set active
+- Set default
+- Rename
+- Delete (removes linked timetable entries/sessions)
 
 ### Lab Groups
-Labs in timetable often contain `GPA/GPB/GPC/GPD`:
-- A = GPA
-- B = GPB
-- C = GPC
-- D = GPD
+Labs often appear as `GPA/GPB/GPC/GPD` in the timetable:
+- **A = GPA**
+- **B = GPB**
+- **C = GPC**
+- **D = GPD**
 
-The app filters sessions based on your selected lab group.
+The app filters timetable entries and sessions based on the selected Lab Group.
 
 ---
 
-## Local Setup
+## Environment Variables
 
-### 1) Install
-```bash
-npm i
+Create a `.env` file (do NOT commit it). Minimum required variables:
+
+```env
+DATABASE_URL="YOUR_POOLER_URL_6543_WITH_SSL_AND_PGBOUNCER"
+DIRECT_URL="YOUR_DIRECT_URL_5432_WITH_SSL"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="YOUR_RANDOM_SECRET"
