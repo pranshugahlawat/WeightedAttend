@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
-  "build": "prisma generate && next build",
-  "start": "next start",
-  "prisma:migrate": "prisma migrate dev",
-  "prisma:studio": "prisma studio"
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.15",
@@ -26,6 +26,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "22.20.3",
     "@types/react": "^19.3.0",
     "autoprefixer": "^10.4.20",
