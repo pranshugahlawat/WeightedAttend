@@ -1,12 +1,15 @@
 import { getToken } from "next-auth/jwt";
-import { headers } from "next/headers";
+import { cookies } from "next/headers";
 
 export async function requireUserId() {
-  const h = await headers();
-  const cookie = h.get("cookie") ?? "";
+  const c = await cookies();
+  const cookieHeader = c
+    .getAll()
+    .map((x) => `${x.name}=${x.value}`)
+    .join("; ");
 
   const token = await getToken({
-    req: { headers: { cookie } } as any,
+    req: { headers: { cookie: cookieHeader } } as any,
     secret: process.env.NEXTAUTH_SECRET
   });
 
