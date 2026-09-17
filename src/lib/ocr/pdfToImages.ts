@@ -2,7 +2,7 @@ import * as pdfjsLib from "pdfjs-dist";
 
 export async function pdfPageToImage(file: File, pageNo: number): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
-  // @ts-expect-error worker
+  // @ts-ignore
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(pdfjsLib as any).version}/pdf.worker.min.js`;
 
