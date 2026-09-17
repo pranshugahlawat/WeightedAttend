@@ -19,9 +19,7 @@ export default function ContextSwitcher() {
     setSettings(s.settings ?? null);
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   async function update(next: Partial<Settings>) {
     if (!settings) return;
@@ -32,9 +30,8 @@ export default function ContextSwitcher() {
       body: JSON.stringify({ ...settings, ...next })
     });
     setBusy(false);
-
     if (!res.ok) {
-      alert((await res.json())?.error ?? "Failed to update");
+      alert((await res.json())?.error ?? "Failed");
       return;
     }
     await load();
@@ -42,6 +39,9 @@ export default function ContextSwitcher() {
   }
 
   if (!settings) return null;
+
+  const hasProfiles = profiles.length > 0;
+  const hasActive = !!settings.activeProfileId;
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -51,11 +51,10 @@ export default function ContextSwitcher() {
         onChange={(e) => update({ activeProfileId: e.target.value || null })}
         disabled={busy}
       >
-        <option value="">Select section…</option>
+        <option value="">{hasProfiles ? "Select section…" : "No sections (Import timetable)"}</option>
         {profiles.map((p) => (
           <option key={p.id} value={p.id}>
-            {p.name}
-            {p.isDefault ? " (default)" : ""}
+            {p.name}{p.isDefault ? " (default)" : ""}
           </option>
         ))}
       </select>
@@ -64,13 +63,20 @@ export default function ContextSwitcher() {
         className="border rounded-md p-2 text-sm"
         value={settings.activeLabGroup}
         onChange={(e) => update({ activeLabGroup: e.target.value as any })}
-        disabled={busy}
+        disabled={busy || !hasActive}
+        title={!hasActive ? "Select a section first" : ""}
       >
         <option value="A">Lab Group A (GPA)</option>
         <option value="B">Lab Group B (GPB)</option>
         <option value="C">Lab Group C (GPC)</option>
         <option value="D">Lab Group D (GPD)</option>
       </select>
+
+      {!hasProfiles ? (
+        <a className="text-sm text-blue-700 hover:underline" href="/import">
+          Import now
+        </a>
+      ) : null}
     </div>
   );
 }

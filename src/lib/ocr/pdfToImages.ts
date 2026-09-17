@@ -2,9 +2,10 @@ import * as pdfjsLib from "pdfjs-dist";
 
 export async function pdfPageToImage(file: File, pageNo: number): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
+
+  // Use local worker served from /public (fixes CDN fetch failure)
   // @ts-ignore
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${(pdfjsLib as any).version}/pdf.worker.min.js`;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
   const pdf = await (pdfjsLib as any).getDocument({ data: arrayBuffer }).promise;
   const page = await pdf.getPage(pageNo);

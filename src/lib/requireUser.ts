@@ -1,9 +1,17 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/authOptions";
+import { getToken } from "next-auth/jwt";
+import { headers } from "next/headers";
 
 export async function requireUserId() {
-  const session = await getServerSession(authOptions);
-  const userId = (session?.user as any)?.id as string | undefined;
+  const h = headers();
+  const cookie = h.get("cookie") ?? "";
+
+  const token = await getToken({
+    // minimal req object for getToken
+    req: { headers: { cookie } } as any,
+    secret: process.env.NEXTAUTH_SECRET
+  });
+
+  const userId = token?.sub;
   if (!userId) throw new Error("UNAUTHORIZED");
   return userId;
 }
