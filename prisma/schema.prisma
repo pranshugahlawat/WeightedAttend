@@ -118,6 +118,7 @@ model ClassSession {
   timetableEntryId String
   date             DateTime      @db.Date
   status           SessionStatus
+  lockedAt         DateTime?    
   note             String?
   createdAt        DateTime      @default(now())
 

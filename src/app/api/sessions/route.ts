@@ -51,7 +51,8 @@ export async function PUT(req: Request) {
           userId,
           timetableEntryId: e.id,
           date,
-          status: SessionStatus.PRESENT
+          status: SessionStatus.PRESENT,
+          lockedAt: null
         }
       });
     }
@@ -86,7 +87,11 @@ export async function GET(req: Request) {
     });
 
     return Response.json({ sessions });
-  } catch {
+  } catch (e: any) {
+  if (e?.message === "UNAUTHORIZED") {
     return Response.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
+  console.error("sessions route error:", e);
+  return Response.json({ error: e?.message ?? "Internal error" }, { status: 500 });
+}
 }

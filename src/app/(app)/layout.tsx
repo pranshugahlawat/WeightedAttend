@@ -1,9 +1,12 @@
-import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/authOptions";
+import { requireUserId } from "@/lib/requireUser";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/signin");
+  try {
+    await requireUserId();
+  } catch {
+    redirect("/signin");
+  }
+
   return <>{children}</>;
 }

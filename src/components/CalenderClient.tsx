@@ -33,6 +33,8 @@ export default function CalendarClient() {
           initialView="dayGridMonth"
           events={events}
           height="auto"
+          dayMaxEvents={true}
+          eventDisplay="block"
         />
       </div>
     </div>

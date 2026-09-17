@@ -89,6 +89,7 @@ export async function computeDailySeries(userId: string, days: number) {
   const byDate = new Map<string, { present: number; conducted: number }>();
 
   for (const s of sessions) {
+    if (!s.lockedAt) continue;
     if (s.status === SessionStatus.CANCELLED) continue;
 
     const key = toISODateUTC(new Date(s.date));

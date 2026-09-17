@@ -36,19 +36,31 @@ export default function SettingsClient() {
   }
 
   async function syncHolidays() {
-    setBusy(true);
-    const res = await fetch("/api/holidays/sync", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ year, countryCode })
-    });
-    setBusy(false);
-    if (!res.ok) {
-      alert((await res.json())?.error ?? "Failed to sync holidays");
-      return;
-    }
-    alert("Holiday sync complete.");
+  setBusy(true);
+  const res = await fetch("/api/holidays/sync", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ year, countryCode })
+  });
+  setBusy(false);
+
+  const payload = await safeJson(res);
+
+  if (!res.ok) {
+    alert(payload?.error ?? "Failed to sync holidays");
+    return;
   }
+  alert(`Holiday sync complete. Synced: ${payload.synced ?? 0}`);
+}
+
+async function safeJson(res: Response) {
+  const ct = res.headers.get("content-type") || "";
+  if (ct.includes("application/json")) {
+    try { return await res.json(); } catch { return {}; }
+  }
+  const text = await res.text().catch(() => "");
+  return { error: text || `HTTP ${res.status}` };
+}
 
   if (loading) return <div className="border rounded-lg p-4 bg-white">Loading…</div>;
 

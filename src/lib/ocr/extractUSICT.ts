@@ -75,8 +75,13 @@ export function extractUSICTTimetable(ocr: OCRResult): ExtractedTimetable {
     if (!cellText) continue;
 
     const room =
-      cellText.match(/(NBLT\s*\d+|ECR\s*\d+|DTL\s*\d+|ETL\s*\d+|NBLAB\d+)/)?.[1]?.replace(/\s+/g, " ") ??
-      null;
+  cellText.match(/(NBLT\s*\d+|ECR\s*\d+|DTL\s*\d+|ETL\s*\d+|NBLAB\d+)/)?.[1]?.replace(/\s+/g, " ") ??
+  null;
+
+const teacher = extractTeacher(cellText);
+
+const roomWithTeacher =
+  room && teacher ? `${room} · ${teacher}` : room ? room : teacher ? teacher : null;
 
     const courseMatches = cellText.match(/([A-Z]{2,6})\s*(\d{3})([A-Z])?/g) ?? [];
     const courses = Array.from(new Set(courseMatches.map(normalizeCourse)));
@@ -143,4 +148,21 @@ function normalizeCourse(s: string) {
   const m = s.replace(/\s+/g, " ").trim().match(/^([A-Z]{2,6})\s*(\d{3})\s*([A-Z])?$/);
   if (!m) return s.replace(/\s+/g, " ").trim();
   return `${m[1]} ${m[2]}${m[3] ?? ""}`.trim();
+}
+
+function extractTeacher(cellText: string) {
+  // Remove obvious tokens
+  let t = cellText
+    .replace(/CSE_[A-Z0-9_]+|AI_DS_[A-Z0-9_]+|IT_[A-Z0-9_]+|ECE_[A-Z0-9_]+|MCA_[A-Z0-9_]+/g, " ")
+    .replace(/\b([A-Z]{2,6})\s*\d{3}[A-Z]?\b/g, " ")
+    .replace(/\b(NBLT|ECR|DTL|ETL)\s*\d+\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Prefer patterns like "CF Dr. Rajkumar Sharma", "USBAS_DR MAMTA RANI", "RS GAYATRI"
+  const m =
+    t.match(/\b(CF|RS|USBAS_DR|UHSSS_Ms|UHSSS_Mr|USEM_Prof)\b[\sA-Za-z.]{3,60}/) ??
+    t.match(/\b(Dr\.?|Prof\.?|Mr\.?|Ms\.?)\s+[A-Za-z. ]{3,40}/);
+
+  return m ? m[0].trim() : null;
 }
